@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Alex's Grammar Masterclass</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        /* =========================================================
+           ROOT COLORS
+        ========================================================= */
+
+        :root {
+            --bg-color: #040406;
+            --tron-cyan: #00f3ff;
+            --magic-pink: #ff00ea;
+            --gold-fruit: #ffd700;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+
+            margin: 0;
+            padding: 0;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            min-height: 100vh;
+
+            overflow-x: hidden;
+
+            position: relative;
+        }
+
+        /* =========================================================
+           TRON FLOOR GRID
+        ========================================================= */
+
+        .tron-grid {
+            position: absolute;
+            bottom: 0;
+            left: -50%;
+
+            width: 200%;
+            height: 40vh;
+
+            background-image:
+                linear-gradient(transparent 95%, rgba(0, 243, 255, 0.2) 100%),
+                linear-gradient(90deg, transparent 95%, rgba(0, 243, 255, 0.2) 100%);
+
+            background-size: 40px 40px;
+
+            transform: perspective(600px) rotateX(75deg);
+            transform-origin: bottom;
+
+            z-index: 0;
+
+            pointer-events: none;
+
+            box-shadow: inset 0 50px 100px var(--bg-color);
+        }
+
+        /* =========================================================
+           PARTICLES
+        ========================================================= */
+
+        .particles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            overflow: hidden;
+
+            z-index: 1;
+
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            bottom: -30px;
+
+            font-size: 1.8rem;
+            font-family: 'Cinzel', serif;
+
+            color: var(--magic-pink);
+
+            text-shadow:
+                0 0 10px var(--magic-pink),
+                0 0 20px var(--magic-pink);
+
+            animation: floatUp linear infinite;
+
+            opacity: 0;
+        }
+
+        .particle:nth-child(even) {
+            color: var(--tron-cyan);
+
+            text-shadow:
+                0 0 10px var(--tron-cyan),
+                0 0 20px var(--tron-cyan);
+
+            font-size: 1.4rem;
+        }
+
+        @keyframes floatUp {
+
+            0% {
+                transform: translateY(0) translateX(0) scale(1) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.8;
+            }
+
+            90% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform:
+                    translateY(-100vh)
+                    translateX(50px)
+                    scale(0.5)
+                    rotate(180deg);
+
+                opacity: 0;
+            }
+        }
+
+
+        /* =========================================================
+           HEADER
+        ========================================================= */
+
+        .header {
+            text-align: center;
+            margin-top: 40px;
+
+            z-index: 10;
+            position: relative;
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+
+            font-size: 3.5rem;
+
+            color: #ffffff;
+
+            text-shadow:
+                0 0 10px rgba(0, 243, 255, 0.5),
+                0 0 20px var(--tron-cyan);
+
+            margin: 0;
+
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+
+            color: var(--magic-pink);
+
+            letter-spacing: 4px;
+
+            text-transform: uppercase;
+
+            text-shadow: 0 0 8px var(--magic-pink);
+
+            margin-top: 5px;
+
+            font-weight: 600;
+        }
+
+        /* =========================================================
+           LOGIN ICON
+        ========================================================= */
+
+        .login-icon {
+
+            position: fixed;
+
+            top: 25px;
+            right: 30px;
+
+            width: 60px;
+            height: 60px;
+
+            border-radius: 50%;
+
+            border: 2px solid var(--tron-cyan);
+
+            background: rgba(4, 4, 6, 0.8);
+
+            backdrop-filter: blur(10px);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            z-index: 999;
+
+            box-shadow:
+                0 0 15px var(--tron-cyan),
+                inset 0 0 10px rgba(0,243,255,0.3);
+
+            transition: 0.3s;
+        }
+
+        .login-icon:hover {
+            transform: scale(1.08);
+
+            box-shadow:
+                0 0 25px var(--tron-cyan),
+                0 0 40px rgba(255,255,255,0.4);
+        }
+
+        .login-icon svg {
+            width: 28px;
+            height: 28px;
+
+            fill: var(--tron-cyan);
+        }
+/* =========================================================
+   TREE WRAPPER
+========================================================= */
+
+.tree-wrapper {
+
+    position: relative;
+
+    margin-top: 20px;
+
+    width: 100%;
+    max-width: 900px;
+
+    height: 720px;
+
+    z-index: 10;
+}
+
+/* =========================================================
+   SVG BACKGROUND CONTAINER
+   PASTE YOUR MASSIVE SVG TREE HERE LATER
+========================================================= */
+
+.svg-container {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: 0.6;
+
+    z-index: 1;
+
+    pointer-events: none;
+}
+
+        /* =========================================================
+           EDITABLE NODE PARAMETERS
+           EDIT ONLY THESE VALUES LATER
+        ========================================================= */
+
+        :root {
+
+            /* ======================================
+               NODE WIDTHS
+            ====================================== */
+
+            --node-width: 160px;
+            --sentence-width: 180px;
+            --essay-width: 220px;
+
+            /* ======================================
+               NODE HEIGHT / FONT
+            ====================================== */
+
+            --node-padding-y: 14px;
+            --node-padding-x: 18px;
+
+            --node-font-size: 1.2rem;
+            --essay-font-size: 1.45rem;
+
+            /* ======================================
+               LETTERS POSITION
+            ====================================== */
+
+            --letters-left: 50%;
+            --letters-bottom: 8%;
+
+            /* ======================================
+               WORDS POSITION
+            ====================================== */
+
+            --words-left: 50%;
+            --words-bottom: 27%;
+
+            /* ======================================
+               PHRASES POSITION
+            ====================================== */
+
+            --phrases-left: 18%;
+            --phrases-bottom: 41%;
+
+            /* ======================================
+               CLAUSES POSITION
+            ====================================== */
+
+            --clauses-left: 82%;
+            --clauses-bottom: 41%;
+
+            /* ======================================
+               SENTENCES POSITION
+            ====================================== */
+
+            --sentence-left: 50%;
+            --sentence-bottom: 41%;
+
+            /* ======================================
+               PARAGRAPHS POSITION
+            ====================================== */
+
+            --paragraph-left: 50%;
+            --paragraph-top: 35%;
+
+            /* ======================================
+               ESSAYS POSITION
+            ====================================== */
+
+            --essay-left: 50%;
+            --essay-top: 13%;
+        }
+
+        /* =========================================================
+           NODE BASE
+        ========================================================= */
+
+        .node {
+
+            position: absolute;
+
+            width: var(--node-width);
+
+            background: rgba(4, 4, 6, 0.8);
+
+            border: 2px solid var(--tron-cyan);
+
+            box-shadow:
+                0 0 15px var(--tron-cyan),
+                inset 0 0 10px rgba(0, 243, 255, 0.3);
+
+            border-radius: 8px;
+
+            padding:
+                var(--node-padding-y)
+                var(--node-padding-x);
+
+            color: white;
+
+            font-size: var(--node-font-size);
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            cursor: pointer;
+
+            text-align: center;
+
+            backdrop-filter: blur(5px);
+
+            text-decoration: none;
+
+            opacity: 0;
+
+            transform: translateX(-50%) scale(0.5);
+
+            animation: popIn 0.5s ease-out forwards;
+
+            transition:
+                all 0.3s
+                cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .node:hover {
+
+            transform:
+                translateX(-50%)
+                scale(1.15)
+                translateY(-5px);
+
+            background: var(--tron-cyan);
+
+            color: black;
+
+            border-color: white;
+
+            box-shadow:
+                0 0 25px var(--tron-cyan),
+                0 0 40px rgba(255,255,255,0.8);
+        }
+
+        /* =========================================================
+           SPECIAL GOLD NODE
+        ========================================================= */
+
+        .essay-node {
+
+            width: var(--essay-width);
+
+            font-size: var(--essay-font-size);
+
+            border-color: var(--gold-fruit);
+
+            box-shadow:
+                0 0 20px var(--gold-fruit);
+        }
+
+        .essay-node:hover {
+
+            background: var(--gold-fruit);
+
+            box-shadow:
+                0 0 35px var(--gold-fruit);
+        }
+
+        .sentence-node {
+            width: var(--sentence-width);
+        }
+
+        /* =========================================================
+           NODE POSITIONS
+        ========================================================= */
+
+        .letters-node {
+
+            left: var(--letters-left);
+            bottom: var(--letters-bottom);
+
+            border-color: var(--magic-pink);
+
+            box-shadow:
+                0 0 15px var(--magic-pink);
+
+            animation-delay: 0.5s;
+        }
+
+        .words-node {
+
+            left: var(--words-left);
+            bottom: var(--words-bottom);
+
+            animation-delay: 1s;
+        }
+
+        .phrases-node {
+
+            left: var(--phrases-left);
+            bottom: var(--phrases-bottom);
+
+            animation-delay: 1.5s;
+        }
+
+        .clauses-node {
+
+            left: var(--clauses-left);
+            bottom: var(--clauses-bottom);
+
+            animation-delay: 2s;
+        }
+
+        .sentence-node {
+
+            left: var(--sentence-left);
+            bottom: var(--sentence-bottom);
+
+            animation-delay: 2.5s;
+        }
+
+        .paragraph-node {
+
+            left: var(--paragraph-left);
+            top: var(--paragraph-top);
+
+            animation-delay: 3s;
+        }
+
+        .essay-node {
+
+            left: var(--essay-left);
+            top: var(--essay-top);
+
+            animation-delay: 3.5s;
+        }
+
+        @keyframes popIn {
+
+            to {
+                opacity: 1;
+                transform:
+                    translateX(-50%)
+                    scale(1);
+            }
+        }
+
+        /* =========================================================
+           LOGIN MODAL
+        ========================================================= */
+
+        .modal-overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0,0,0,0.7);
+
+            backdrop-filter: blur(12px);
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            z-index: 9999;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+
+            width: 420px;
+
+            background: rgba(5, 8, 20, 0.85);
+
+            border: 2px solid var(--tron-cyan);
+
+            border-radius: 20px;
+
+            padding: 35px;
+
+            backdrop-filter: blur(15px);
+
+            box-shadow:
+                0 0 25px rgba(0,243,255,0.6),
+                inset 0 0 15px rgba(0,243,255,0.2);
+
+            text-align: center;
+        }
+
+        .modal-title {
+
+            font-family: 'Cinzel', serif;
+
+            font-size: 2rem;
+
+            margin-bottom: 25px;
+
+            color: white;
+
+            text-shadow:
+                0 0 10px var(--tron-cyan);
+        }
+
+        .magic-btn {
+
+            width: 100%;
+
+            padding: 14px;
+
+            margin-top: 15px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background: rgba(0,243,255,0.1);
+
+            border: 1px solid rgba(0,243,255,0.5);
+
+            color: white;
+
+            font-size: 1rem;
+
+            font-family: 'Rajdhani', sans-serif;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .magic-btn:hover {
+
+            background: var(--tron-cyan);
+
+            color: black;
+
+            box-shadow:
+                0 0 20px var(--tron-cyan);
+        }
+
+        .magic-input {
+
+            width: 100%;
+
+            padding: 14px;
+
+            margin-top: 20px;
+
+            border-radius: 12px;
+
+            border: 1px solid rgba(255,255,255,0.2);
+
+            background: rgba(255,255,255,0.05);
+
+            color: white;
+
+            outline: none;
+
+            font-size: 1rem;
+        }
+
+        .close-btn {
+
+            margin-top: 20px;
+
+            color: #aaa;
+
+            cursor: pointer;
+
+            font-size: 0.9rem;
+        }
+/* =========================================================
+   SVG BACKGROUND CONTAINER
+========================================================= */
+
+.svg-container {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: 0.6;
+
+    z-index: -5;
+
+    pointer-events: none;
+}
+/* =========================================================
+   LOCKED NODES
+========================================================= */
+
+.locked-node {
+
+    opacity: 0.22 !important;
+
+    filter: grayscale(1);
+
+    pointer-events: none;
+
+    border-color: #666 !important;
+
+    box-shadow:
+        0 0 8px rgba(255,255,255,0.08) !important;
+
+    color: transparent !important;
+
+    text-shadow: none !important;
+}
+
+.locked-node:hover {
+
+    transform:
+        translateX(-50%)
+        scale(1);
+
+    background: rgba(4, 4, 6, 0.8);
+
+    color: transparent;
+
+    box-shadow:
+        0 0 8px rgba(255,255,255,0.08);
+
+    border-color: #666;
+}
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================================================
+         ENVIRONMENT
+    ========================================================= -->
+
+    <div class="tron-grid"></div>
+
+    <div class="particles-container" id="particles"></div>
+
+    <!-- =========================================================
+         LOGIN ICON
+    ========================================================= -->
+
+<div class="login-icon" id="loginIcon">
+
+    <div id="loginIconInner">
+
+        <!-- DEFAULT USER ICON -->
+
+        <svg id="defaultUserIcon"
+             viewBox="0 0 22 22">
+
+            <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v3h20v-3c0-3.343-6.686-5-10-5z"/>
+
+        </svg>
+
+    </div>
+
+</div>
+
+    <!-- =========================================================
+         HEADER
+    ========================================================= -->
+
+    <div class="header">
+
+        <h1>Alex's Grammar Masterclass</h1>
+
+        <div class="subtitle">
+            The Core Framework
+        </div>
+
+    </div>
+
+    <!-- =========================================================
+         TREE AREA
+    ========================================================= -->
+
+    <div class="tree-wrapper">
+
+    <!-- SVG BACKGROUND -->
+    <div class="svg-container">
+
+        <!-- PASTE YOUR 13K SVG HERE -->
+
+
+    </div>
+
+    <!-- NODES -->
+        <!-- LETTERS -->
+
+        <a href="letter.html"
+           class="node letters-node">
+            LETTERS
+        </a>
+
+        <!-- WORDS -->
+
+        <a href="words.html"
+           class="node words-node"
+   data-level="2">
+            WORDS
+        </a>
+
+        <!-- PHRASES -->
+
+        <a href="phrase.html"
+           class="node phrases-node"
+   data-level="3">
+            PHRASES
+        </a>
+
+        <!-- CLAUSES -->
+
+        <a href="clauses.html"
+           class="node clauses-node"
+   data-level="4">
+            CLAUSES
+        </a>
+
+        <!-- SENTENCES -->
+
+        <a href="SENTENCE.html"
+           class="node sentence-node"
+   data-level="5">
+            SENTENCES
+        </a>
+
+        <!-- PARAGRAPHS -->
+
+        <a href="paragraph.html"
+           class="node paragraph-node"
+   data-level="6">
+            PARAGRAPHS
+        </a>
+
+        <!-- ESSAYS -->
+
+        <a href="essay.html"
+           class="node essay-node"
+   data-level="7">
+            ESSAYS
+        </a>
+
+    </div>
+
+    <!-- =========================================================
+         LOGIN MODAL
+    ========================================================= -->
+
+    <div class="modal-overlay" id="modalOverlay">
+
+        <div class="modal-box" id="modalBox"></div>
+
+    </div>
+
+    <script>
+
+        /* =========================================================
+           CHANGE PASSWORD HERE LATER
+        ========================================================= */
+
+        const ALEX_PASSWORD = "246357cn";
+
+
+        /* =========================================================
+           LOGIN SYSTEM
+        ========================================================= */
+
+        const loginIcon =
+            document.getElementById("loginIcon");
+
+        const modalOverlay =
+            document.getElementById("modalOverlay");
+
+        const modalBox =
+            document.getElementById("modalBox");
+
+
+loginIcon.addEventListener("click", () => {
+
+    const accountType =
+        localStorage.getItem("accountType");
+
+    if (accountType) {
+
+        openAccountPanel();
+
+    } else {
+
+        openMainLogin();
+    }
+});
+
+
+        function openMainLogin() {
+
+            modalOverlay.classList.add("active");
+
+            modalBox.innerHTML = `
+
+                <div class="modal-title">
+                    ARE YOU ALEX?
+                </div>
+
+                <button class="magic-btn"
+                        onclick="openAlexLogin()">
+
+                    I AM ALEX
+
+                </button>
+
+                <button class="magic-btn"
+                        onclick="openStudentLogin()">
+
+                    I'M NOT ALEX
+
+                </button>
+
+                <div class="close-btn"
+                     onclick="closeModal()">
+
+                    CLOSE
+
+                </div>
+            `;
+        }
+
+
+        function openAlexLogin() {
+
+            modalBox.innerHTML = `
+
+                <div class="modal-title">
+                    ARCHMAGE ACCESS
+                </div>
+
+	<input type="password"
+       id="alexPassword"
+       class="magic-input"
+       placeholder="Enter Password..."
+       onkeydown="handleAlexEnter(event)">
+
+                <button class="magic-btn"
+                        onclick="verifyAlexPassword()">
+
+                    ENTER
+
+                </button>
+
+                <div class="close-btn"
+                     onclick="closeModal()">
+
+                    CLOSE
+
+                </div>
+
+                <div id="errorText"
+                     style="
+                        margin-top:15px;
+                        color:#ff3366;
+                        font-weight:bold;
+                     ">
+                </div>
+            `;
+        }
+
+
+        function verifyAlexPassword() {
+
+            const pw =
+                document.getElementById("alexPassword").value;
+
+            if (pw === ALEX_PASSWORD) {
+     
+   localStorage.setItem(
+    "accountType",
+    "archmage"
+);
+    activateArchmageMode();
+
+document
+    .querySelectorAll(".node")
+    .forEach(node => {
+
+        node.classList.remove("locked-node");
+    });
+
+alert("ARCHMAGE ACCESS GRANTED");
+
+                closeModal();
+
+            } else {
+
+                document.getElementById("errorText")
+                    .innerText = "WRONG PASSWORD - YOU IMPOSTER!";
+            }
+        }
+/* =========================================================
+   ENTER KEY LOGIN
+========================================================= */
+
+function handleAlexEnter(event) {
+
+    if (event.key === "Enter") {
+
+        verifyAlexPassword();
+    }
+}
+
+        function openStudentLogin() {
+
+            modalBox.innerHTML = `
+
+                <div class="modal-title">
+                    STUDENT LOGIN
+                </div>
+
+                <button class="magic-btn"
+                        onclick="loginWithGoogle()">
+                    Continue with Google
+                </button>
+
+                <button class="magic-btn"
+                        onclick="alert('Email login is reserved for the next setup step. Google login is ready first.')">
+                    Continue with Email
+                </button>
+
+                <div style="
+                    margin-top:20px;
+                    color:#888;
+                    line-height:1.5;
+                    font-size:0.9rem;
+                ">
+
+                    FUTURE CLOUD SAVE SYSTEM
+
+                    <br><br>
+
+                    Cloudflare / Firebase /
+                    Supabase Ready
+
+                </div>
+
+                <div class="close-btn"
+                     onclick="closeModal()">
+
+                    CLOSE
+
+                </div>
+            `;
+        }
+
+
+        function closeModal() {
+
+            modalOverlay.classList.remove("active");
+        }
+
+/* =========================================================
+   ARCHMAGE ICON MODE
+========================================================= */
+
+function activateArchmageMode() {
+
+    const icon =
+        document.getElementById("loginIconInner");
+
+    icon.innerHTML = `
+
+        <svg viewBox="0 0 24 24"
+             style="
+                width:30px;
+                height:30px;
+                fill:#ffd700;
+                filter:drop-shadow(0 0 10px #ffd700);
+             ">
+
+            <path d="M5 16L3 5l5.5 3L12 2l3.5 6L21 5l-2 11H5zm0 2h14v2H5v-2z"/>
+
+        </svg>
+    `;
+}
+/* =========================================================
+   UNIVERSAL ACCOUNT PANEL
+========================================================= */
+
+function openAccountPanel() {
+
+    const accountType =
+        localStorage.getItem("accountType");
+
+    let title = "STUDENT ACCESS";
+    let subtitle = "ACTIVE ACCOUNT";
+
+    if (accountType === "archmage") {
+
+        title = "ARCHMAGE ACCESS";
+        subtitle = "MASTER OVERRIDE ACTIVE";
+    }
+
+    modalOverlay.classList.add("active");
+
+    modalBox.innerHTML = `
+
+        <div class="modal-title">
+            ${title}
+        </div>
+
+        <div style="
+            color:#ffd700;
+            margin-bottom:20px;
+            font-size:1rem;
+            text-shadow:0 0 10px #ffd700;
+        ">
+
+            ${subtitle}
+
+        </div>
+
+        <button class="magic-btn"
+                onclick="logoutUser()">
+
+            LOGOUT
+
+        </button>
+
+        <div class="close-btn"
+             onclick="closeModal()">
+
+            CLOSE
+
+        </div>
+    `;
+}
+
+/* =========================================================
+   UNIVERSAL LOGOUT
+========================================================= */
+
+function logoutUser() {
+
+    if (window.logoutFirebaseUser) {
+
+        window.logoutFirebaseUser();
+
+        return;
+    }
+
+    localStorage.removeItem(
+        "accountType"
+    );
+
+    location.reload();
+}
+
+        /* =========================================================
+           MAGIC PARTICLES
+        ========================================================= */
+
+        const particleContainer =
+            document.getElementById('particles');
+
+        const particleCount = 35;
+
+        const runes = [
+            'ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ',
+            'ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛈ',
+            'ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ',
+            'ᛚ','ᛜ','ᛞ','ᛟ','⚡','✦'
+        ];
+
+        for (let i = 0; i < particleCount; i++) {
+
+            let particle =
+                document.createElement('div');
+
+            particle.classList.add('particle');
+
+            particle.innerText =
+                runes[Math.floor(Math.random() * runes.length)];
+
+            let leftPos = Math.random() * 100;
+
+            let animDuration = 6 + Math.random() * 8;
+
+            let delay = Math.random() * 8;
+
+            particle.style.left = leftPos + 'vw';
+
+            particle.style.animationDuration =
+                animDuration + 's';
+
+            particle.style.animationDelay =
+                delay + 's';
+
+            particleContainer.appendChild(particle);
+        }
+
+/* =========================================================
+   DEFAULT LOCK STATE
+========================================================= */
+
+let unlockedLevel = 1;
+
+const nodes = document.querySelectorAll(".node");
+
+function applyUnlockedLevel(level) {
+
+    unlockedLevel =
+        Number(level) || 1;
+
+    nodes.forEach(node => {
+
+        const nodeLevel =
+            parseInt(node.dataset.level);
+
+        if (nodeLevel > unlockedLevel) {
+
+            node.classList.add("locked-node");
+
+        } else {
+
+            node.classList.remove("locked-node");
+        }
+    });
+}
+
+window.applyUnlockedLevel =
+    applyUnlockedLevel;
+
+applyUnlockedLevel(unlockedLevel);
+
+/* =========================================================
+   AUTO RESTORE ALEX LOGIN
+========================================================= */
+/* =========================================================
+   ACCOUNT RESTORE
+========================================================= */
+
+window.addEventListener("DOMContentLoaded", () => {
+
+    const accountType =
+        localStorage.getItem("accountType");
+
+    if (accountType === "archmage") {
+
+        activateArchmageMode();
+
+        document
+            .querySelectorAll(".node")
+            .forEach(node => {
+
+                node.classList.remove("locked-node");
+            });
+    }
+});
+    </script>
+
+    <script type="module">
+
+        /* =========================================================
+           FIREBASE STUDENT LOGIN + CLOUD PROGRESS
+           Paste your Firebase config below.
+        ========================================================= */
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+        import {
+            getAuth,
+            GoogleAuthProvider,
+            onAuthStateChanged,
+            signInWithPopup,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+        import {
+            arrayUnion,
+            doc,
+            getDoc,
+            getFirestore,
+            serverTimestamp,
+            setDoc
+        } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCjRZ-Co9HWRU_RGewt_koAY-aZkInzW0A",
+            authDomain: "alex-masterclass.firebaseapp.com",
+            projectId: "alex-masterclass",
+            storageBucket: "alex-masterclass.firebasestorage.app",
+            messagingSenderId: "733470008609",
+            appId: "1:733470008609:web:685da1966d174f11a3ca60",
+            measurementId: "G-BZEXKPD2KJ"
+        };
+
+        let firebaseAuth = null;
+        let firestoreDb = null;
+        let currentStudent = null;
+
+        function activateStudentMode(user) {
+
+            const icon =
+                document.getElementById("loginIconInner");
+
+            const initial =
+                (user.displayName || user.email || "S")
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase();
+
+            icon.innerHTML = `
+
+                <div style="
+                    width:32px;
+                    height:32px;
+                    border-radius:50%;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    color:#040406;
+                    background:#00f3ff;
+                    font-weight:700;
+                    box-shadow:0 0 12px #00f3ff;
+                ">
+                    ${initial}
+                </div>
+            `;
+        }
+
+        async function loadOrCreateStudentProgress(user) {
+
+            const studentRef =
+                doc(firestoreDb, "users", user.uid);
+
+            const snapshot =
+                await getDoc(studentRef);
+
+            if (!snapshot.exists()) {
+
+                const startingProgress = {
+                    displayName: user.displayName || "",
+                    email: user.email || "",
+                    unlockedLevel: 1,
+                    completedLessons: [],
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                };
+
+                await setDoc(
+                    studentRef,
+                    startingProgress
+                );
+
+                return startingProgress;
+            }
+
+            await setDoc(
+                studentRef,
+                {
+                    displayName: user.displayName || "",
+                    email: user.email || "",
+                    lastLoginAt: serverTimestamp()
+                },
+                { merge: true }
+            );
+
+            return snapshot.data();
+        }
+
+        window.loginWithGoogle = async function () {
+
+            const provider =
+                new GoogleAuthProvider();
+
+            try {
+
+                await signInWithPopup(
+                    firebaseAuth,
+                    provider
+                );
+
+            } catch (error) {
+
+                alert(
+                    "Google login failed: " +
+                    error.message
+                );
+            }
+        };
+
+        window.logoutFirebaseUser = async function () {
+
+            try {
+
+                if (firebaseAuth) {
+
+                    await signOut(firebaseAuth);
+                }
+
+            } finally {
+
+                localStorage.removeItem(
+                    "accountType"
+                );
+
+                location.reload();
+            }
+        };
+
+        window.saveStudentProgress = async function (
+            nextUnlockedLevel,
+            completedLesson
+        ) {
+
+            if (!currentStudent || !firestoreDb) {
+
+                alert("Please sign in before saving progress.");
+
+                return;
+            }
+
+            const studentRef =
+                doc(firestoreDb, "users", currentStudent.uid);
+
+            const progressUpdate = {
+                unlockedLevel: Number(nextUnlockedLevel) || 1,
+                updatedAt: serverTimestamp()
+            };
+
+            if (completedLesson) {
+
+                progressUpdate.completedLessons =
+                    arrayUnion(completedLesson);
+            }
+
+            await setDoc(
+                studentRef,
+                progressUpdate,
+                { merge: true }
+            );
+
+            if (window.applyUnlockedLevel) {
+
+                window.applyUnlockedLevel(
+                    progressUpdate.unlockedLevel
+                );
+            }
+        };
+
+        const firebaseApp =
+            initializeApp(firebaseConfig);
+
+        firebaseAuth =
+            getAuth(firebaseApp);
+
+        firestoreDb =
+            getFirestore(firebaseApp);
+
+        onAuthStateChanged(
+            firebaseAuth,
+            async (user) => {
+
+                if (!user) {
+
+                    return;
+                }
+
+                currentStudent =
+                    user;
+
+                if (
+                    localStorage.getItem("accountType") ===
+                    "archmage"
+                ) {
+
+                    return;
+                }
+
+                localStorage.setItem(
+                    "accountType",
+                    "student"
+                );
+
+                activateStudentMode(user);
+
+                const progress =
+                    await loadOrCreateStudentProgress(user);
+
+                if (window.applyUnlockedLevel) {
+
+                    window.applyUnlockedLevel(
+                        progress.unlockedLevel || 1
+                    );
+                }
+            }
+        );
+
+    </script>
+
+</body>
+</html>

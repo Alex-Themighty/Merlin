@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 1: Letters - Archive Access</title>
+    <!-- React and Babel CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&family=JetBrains+Mono:wght@700&display=swap');
+        
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #020617;
+        }
+
+        .font-sans { font-family: 'Inter', sans-serif; }
+        .font-serif { font-family: 'Playfair+Display', serif; }
+        .font-mono { font-family: 'JetBrains+Mono', monospace; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #451a03; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #92400e; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #78350f; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const GameState = {
+            init: () => {
+                if (localStorage.getItem('eng_lives') === null) localStorage.setItem('eng_lives', '5');
+                if (localStorage.getItem('eng_highest_level') === null) localStorage.setItem('eng_highest_level', '4'); 
+                if (localStorage.getItem('eng_level1_viewed') === null) localStorage.setItem('eng_level1_viewed', JSON.stringify({}));
+            },
+            getLives: () => parseInt(localStorage.getItem('eng_lives') || '5'),
+            getHighestLevel: () => parseInt(localStorage.getItem('eng_highest_level') || '4'),
+            getViewedNodes: () => JSON.parse(localStorage.getItem('eng_level1_viewed') || '{}'),
+            markNodeViewed: (id) => {
+                const viewed = JSON.parse(localStorage.getItem('eng_level1_viewed') || '{}');
+                viewed[id] = true;
+                localStorage.setItem('eng_level1_viewed', JSON.stringify(viewed));
+                return viewed;
+            }
+        };
+
+        const Icon = ({ name, size = 24, className = "", fill = "none" }) => {
+            const icons = {
+                Heart: (props) => <svg {...props} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>,
+                Lock: (props) => <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>,
+                Unlock: (props) => <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>,
+                CheckCircle: (props) => <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
+                ChevronLeft: (props) => <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>,
+                ChevronRight: (props) => <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>,
+                AlertCircle: (props) => <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+            };
+            const IconComp = icons[name];
+            return IconComp ? <IconComp className={className} style={{width: size, height: size}} /> : null;
+        };
+
+        function App() {
+            const [lives, setLives] = useState(5);
+            const [highestLevel, setHighestLevel] = useState(4);
+            const [viewedL1, setViewedL1] = useState({ vowels: false, consonants: false, rules: false });
+            const [activeRules, setActiveRules] = useState(false);
+            const currentLevel = 1; 
+
+            useEffect(() => {
+                GameState.init();
+                setLives(GameState.getLives());
+                setHighestLevel(GameState.getHighestLevel());
+                setViewedL1(GameState.getViewedNodes());
+            }, []);
+
+            const l1TestUnlocked = viewedL1.vowels && viewedL1.consonants && viewedL1.rules;
+
+            const handleNodeClick = (node) => {
+                const updatedViewed = GameState.markNodeViewed(node);
+                setViewedL1(updatedViewed);
+                if (node === 'rules') setActiveRules(true);
+            };
+
+            const HeartsHUD = () => (
+                <div className="flex items-center gap-4 bg-slate-900/50 px-5 py-2.5 rounded-full border border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.1)]">
+                    <div className="flex space-x-2">
+                        {[1, 2, 3, 4, 5].map(i => (
+                            <div key={i} className={i <= lives ? "animate-pulse" : ""}>
+                                <Icon 
+                                    name="Heart" 
+                                    size={22} 
+                                    className={`${i <= lives ? "text-red-500 drop-shadow-[0_0_12px_rgba(239,68,68,1)]" : "text-slate-900"}`} 
+                                    fill={i <= lives ? "currentColor" : "none"}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="h-5 w-px bg-slate-800 mx-1"></div>
+                    <div className="font-mono font-bold text-red-500 tracking-tighter text-2xl italic drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]">
+                        {lives}<span className="text-red-900/40 px-0.5">/</span>5
+                    </div>
+                </div>
+            );
+
+            const ProgressColumn = () => (
+                <div className="w-32 bg-slate-950/90 border-l border-amber-900/40 flex flex-col items-center py-6 z-40 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]">
+                    <div className="text-amber-500/70 font-serif text-xs font-bold uppercase tracking-widest mb-4">Mastery</div>
+                    <div className="relative flex-1 w-full flex justify-center py-4">
+                        <div className="relative w-10 bg-slate-900 border-2 border-amber-900/60 rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,1)] overflow-hidden flex flex-col justify-between">
+                            <div 
+                                className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-red-600 via-green-500 via-blue-500 to-purple-600 transition-all duration-1000 ease-in-out shadow-[0_0_25px_rgba(168,85,247,0.4)]"
+                                style={{ height: `${(highestLevel / 7) * 100}%` }}
+                            >
+                                <div className="absolute top-0 w-full h-2 bg-white/40 blur-[1px]"></div>
+                            </div>
+                            {[7, 6, 5, 4, 3, 2, 1].map((level) => {
+                                const isUnlocked = level <= highestLevel;
+                                const isCurrent = level === currentLevel;
+                                return (
+                                    <div key={level} className="relative z-10 w-full flex-1 flex flex-col justify-center items-center border-b border-amber-950/30 last:border-b-0">
+                                        {isCurrent && (
+                                            <div className="absolute -left-10 text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.9)] animate-pulse">
+                                                <Icon name="ChevronRight" size={24} />
+                                            </div>
+                                        )}
+                                        {isCurrent && (
+                                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                                                <div className="w-7 h-7 rounded-full bg-white/20 border-2 border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.8)] backdrop-blur-sm animate-bounce relative">
+                                                    <div className="absolute top-1 right-1 w-2 h-2 bg-white/80 rounded-full blur-[0.5px]"></div>
+                                                </div>
+                                            </div>
+                                        )}
+                                        <span className={`relative z-10 font-serif font-bold text-lg drop-shadow-md transition-colors duration-500 ${isUnlocked ? 'text-slate-950' : 'text-slate-700'}`}>
+                                            {level}
+                                        </span>
+                                        <div className="absolute -right-8">
+                                            {isUnlocked ? <Icon name="Unlock" size={14} className="text-amber-500 drop-shadow-[0_0_5px_rgba(245,158,11,0.5)]" /> : <Icon name="Lock" size={14} className="text-slate-700" />}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="flex flex-col h-screen w-full bg-[#020617] text-white font-sans overflow-hidden relative">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(245,158,11,0.1),transparent_70%)] pointer-events-none"></div>
+
+                    {/* Header HUD */}
+                    <div className="h-24 border-b border-amber-900/30 bg-slate-950/80 backdrop-blur-md flex justify-between items-center px-12 z-50 shadow-[0_4px_30px_rgba(0,0,0,0.7)] flex-shrink-0">
+                        <div className="flex items-center gap-6">
+                            <button onClick={() => window.location.href = 'index.html'} className="text-amber-500/70 hover:text-amber-400 transition-colors flex items-center gap-2 font-mono text-sm uppercase tracking-widest bg-slate-900/50 px-4 py-2 rounded-full border border-amber-500/20">
+                                <Icon name="ChevronLeft" size={18} /> HOME
+                            </button>
+                            <div className="flex flex-col">
+                                <div className="text-[10px] text-amber-600 font-bold tracking-[0.5em] uppercase mb-1 font-mono">Archive_Access</div>
+                                <div className="text-amber-500 font-serif text-3xl font-bold uppercase tracking-[0.15em] drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]">
+                                    Level 1: Letters
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-6">
+                            <HeartsHUD />
+                        </div>
+                    </div>
+
+                    {/* SPLIT LAYOUT FOR CONTENT & PROGRESS COLUMN */}
+                    <div className="flex-1 flex flex-row overflow-hidden">
+                        
+                        <div className="flex-1 relative flex flex-col items-center">
+                            
+                            <div className="flex-1 w-full relative p-8 overflow-y-auto custom-scrollbar flex flex-col pt-12">
+                                
+                                <div className="relative flex flex-col items-center w-full max-w-4xl mx-auto">
+                                    
+                                    {/* Main Title & Trunk */}
+                                    <div className="flex flex-col items-center mb-0">
+                                        <div className="text-5xl lg:text-6xl font-serif font-black text-amber-400 tracking-[0.3em] mb-2 drop-shadow-[0_0_25px_rgba(245,158,11,0.3)]">LETTERS</div>
+                                        <div className="w-px h-10 bg-amber-600/50 shadow-[0_0_5px_rgba(245,158,11,0.5)]"></div>
+                                    </div>
+
+                                    {/* Category Split */}
+                                    <div className="relative flex justify-center w-full mt-0">
+                                        
+                                        <div className="absolute top-0 w-[352px] h-px bg-amber-600/50 shadow-[0_0_5px_rgba(245,158,11,0.5)]"></div>
+
+                                        <div className="flex justify-center gap-24">
+                                            
+                                            {/* LEFT NODE: VOWELS */}
+                                            <div className="relative flex flex-col items-center w-64">
+                                                <div className="w-px h-8 bg-amber-600/50 shadow-[0_0_5px_rgba(245,158,11,0.5)]"></div>
+                                                <div 
+                                                    onClick={() => handleNodeClick('vowels')}
+                                                    className="border border-amber-500/50 bg-gradient-to-b from-slate-800 to-slate-950 text-amber-100 shadow-[0_0_20px_rgba(245,158,11,0.2)] rounded-lg w-full py-4 text-center cursor-pointer hover:bg-slate-800 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:border-amber-400 transition-all duration-300 font-serif tracking-widest uppercase relative z-10"
+                                                >
+                                                    Vowels
+                                                    {viewedL1.vowels && <Icon name="CheckCircle" size={16} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-green-400" />}
+                                                </div>
+
+                                                <div className={`w-full mt-4 transition-all duration-500 ease-in-out origin-top ${viewedL1.vowels ? 'opacity-100 scale-y-100 max-h-64' : 'opacity-0 scale-y-0 max-h-0'} overflow-hidden`}>
+                                                    <div className="p-5 border border-amber-500/30 bg-slate-900/80 rounded-lg shadow-inner text-amber-100/90 font-serif text-sm">
+                                                        <p className="text-xl text-amber-300 mb-4 tracking-wider text-center font-bold">
+                                                            a, e, i, o, u*
+                                                        </p>
+                                                        <div className="border-t border-amber-900/60 pt-4 text-amber-100 leading-relaxed text-lg text-center">
+                                                            *<strong>U</strong> is a <i>semi-vowel</i> when pronounced as <strong>/ʌ/</strong> (e.g., an umbrella), and as a consonant <strong>/juː/</strong> (e.g., a University).
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* RIGHT NODE: CONSONANTS */}
+                                            <div className="relative flex flex-col items-center w-64">
+                                                <div className="w-px h-8 bg-amber-600/50 shadow-[0_0_5px_rgba(245,158,11,0.5)]"></div>
+                                                <div 
+                                                    onClick={() => handleNodeClick('consonants')}
+                                                    className="border border-amber-500/50 bg-gradient-to-b from-slate-800 to-slate-950 text-amber-100 shadow-[0_0_20px_rgba(245,158,11,0.2)] rounded-lg w-full py-4 text-center cursor-pointer hover:bg-slate-800 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] hover:border-amber-400 transition-all duration-300 font-serif tracking-widest uppercase relative z-10"
+                                                >
+                                                    Consonants
+                                                    {viewedL1.consonants && <Icon name="CheckCircle" size={16} className="absolute right-4 top-1/2 transform -translate-y-1/2 text-green-400" />}
+                                                </div>
+
+                                                <div className={`w-full mt-4 transition-all duration-500 ease-in-out origin-top ${viewedL1.consonants ? 'opacity-100 scale-y-100 max-h-64' : 'opacity-0 scale-y-0 max-h-0'} overflow-hidden`}>
+                                                    <div className="p-5 border border-amber-500/30 bg-slate-900/80 rounded-lg shadow-inner text-amber-100/90 font-serif text-lg leading-loose text-center">
+                                                        <span className="text-amber-300 font-bold">b, c, d, f, g, h, j, k, l, m, n, p, q, r, s, t, v, w, x, y, z</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {/* LEGO Rules below the tree, aligned perfectly within the content flow */}
+                                <div className="flex justify-end w-full max-w-4xl mx-auto mt-12 pr-[15%]">
+                                    <button 
+                                        onClick={() => handleNodeClick('rules')}
+                                        className={`px-8 py-4 border-2 rounded transition-all font-mono text-sm lg:text-base font-bold tracking-[0.15em] [word-spacing:-4px] uppercase z-50 shadow-[0_0_15px_rgba(0,0,0,0.5)]
+                                            ${viewedL1.rules ? 'border-green-500/50 text-green-400 bg-green-500/5' : 'border-red-500/50 text-red-500 bg-red-950/40 hover:scale-105'}`}
+                                    >
+                                        {viewedL1.rules ? '[ RULES_SYNCED ]' : '[ ACCESS_LEGO_RULES ]'}
+                                    </button>
+                                </div>
+
+                            </div>
+
+                            {/* Footer Testing Unit */}
+                            <div className="h-28 w-full bg-slate-950/90 border-t border-amber-900/40 p-6 flex items-center justify-center z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.5)] backdrop-blur-md flex-shrink-0">
+                                <button 
+                                    disabled={!l1TestUnlocked}
+                                    onClick={() => window.location.href = 'letter-test.html'}
+                                    className={`px-12 py-4 rounded-md font-serif font-bold uppercase tracking-[0.2em] flex items-center gap-3 transition-all duration-500 text-lg
+                                        ${l1TestUnlocked 
+                                        ? 'bg-gradient-to-r from-amber-600 to-yellow-500 text-slate-950 shadow-[0_0_20px_rgba(245,158,11,0.6)] hover:shadow-[0_0_35px_rgba(245,158,11,0.9)] hover:scale-105 cursor-pointer' 
+                                        : 'bg-slate-900 border-2 border-slate-800 text-slate-600 cursor-not-allowed'}`}
+                                >
+                                    {l1TestUnlocked ? <Icon name="Unlock" size={24} className="text-slate-950"/> : <Icon name="Lock" size={24} />}
+                                    TEST ME
+                                </button>
+                            </div>
+
+                        </div>
+
+                        {/* Right Side Progress Vial */}
+                        <ProgressColumn />
+
+                    </div>
+
+                    {/* LEGO Modal */}
+                    {activeRules && (
+                        <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-[100] flex items-center justify-center p-6">
+                            <div className="bg-slate-900 border border-red-500/50 rounded-lg p-10 max-w-2xl w-full shadow-[0_0_50px_rgba(239,68,68,0.2)] relative">
+                                {/* Close Button */}
+                                <button onClick={() => setActiveRules(false)} className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+
+                                <div className="flex items-center gap-3 mb-8 border-b border-red-900/50 pb-4">
+                                    <Icon name="AlertCircle" className="text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]" size={32} />
+                                    <h2 className="text-3xl font-serif font-bold text-red-400 tracking-[0.2em] uppercase">LEGO Rules</h2>
+                                </div>
+                                
+                                <div className="text-slate-300 space-y-8 mb-10 font-serif leading-relaxed">
+                                    <div>
+                                        <h3 className="text-xl text-amber-400 font-bold mb-2 tracking-wide border-l-4 border-red-500 pl-3">1. Word Minimum</h3>
+                                        <p className="ml-4 mb-3 text-lg">Minimum 2 letters (V+C) to make a word. (Excluding 'I' and 'a').</p>
+                                        <div className="ml-4 bg-slate-950/50 p-5 rounded-md text-lg border border-slate-700 shadow-inner leading-relaxed">
+                                            <span className="text-green-400 font-bold uppercase tracking-widest text-sm mb-2 block font-mono">Example Insight</span>
+                                            <span className="text-amber-100">"is / on / at" (v-c) are words. "hmmm" is not a word.</span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <h3 className="text-xl text-amber-400 font-bold mb-2 tracking-wide border-l-4 border-red-500 pl-3">2. No Triples</h3>
+                                        <p className="ml-4 mb-3 text-lg">No triple consonants. No 3 consecutive vowels (Exception: 'aqueous').</p>
+                                        <div className="ml-4 bg-slate-950/50 p-5 rounded-md text-lg border border-slate-700 shadow-inner leading-relaxed">
+                                            <span className="text-green-400 font-bold uppercase tracking-widest text-sm mb-2 block font-mono">Example Insight</span>
+                                            <span className="text-amber-100">The plural of 'boy' is 'boys', not 'boies', because English syntax avoids triple vowels.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button 
+                                    onClick={() => setActiveRules(false)}
+                                    className="w-full py-4 bg-slate-950 hover:bg-slate-800 text-red-400 rounded border border-red-900/50 font-serif font-bold tracking-widest uppercase transition-colors"
+                                >
+                                    I Understand The Rules
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
